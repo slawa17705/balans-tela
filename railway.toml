@@ -1,0 +1,22 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3
+
+[[services]]
+name = "balance-pro"
+internalPort = 3000
+protocol = "http"
+
+[build.environment]
+NODE_ENV = "production"
+
+[variables]
+OPENROUTER_API_KEY = "{{ .Env.OPENROUTER_API_KEY }}"
+TELEGRAM_BOT_TOKEN = "{{ .Env.TELEGRAM_BOT_TOKEN }}"
+PORT = "3000"

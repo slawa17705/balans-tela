@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <!-- Фавикон для всех устройств -->
+  <link rel="icon" href="images/photo_5469860638277438885_y.png" type="image/png" sizes="64x64">
+  <link rel="apple-touch-icon" href="images/photo_5469860638277438885_y.png">
+
+  <meta name="theme-color" content="#3b82f6">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="7-недельная система управления энергией. Автоматический курс с персонализированным расписанием тренировок и питания.">
+  <meta name="keywords"
+    content="управление энергией, личная эффективность, курс, система, тренировки, питание, расписание">
+  <title>БАЛАНС PRO | Автоматический курс эффективности</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- === БУРГЕР-МЕНЮ (заменяет активацию) === -->
+
+  <nav class="burger-menu">
+    <div class="menu-toggle" id="menu-toggle">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span class="menu-text">Меню системы</span>
+    </div>
+
+    <div class="menu-overlay" id="menu-overlay">
+      <div class="menu-content">
+        <div class="menu-header">
+          <div class="menu-logo">
+            <img src="images/photo_5469860638277438885_y.png" alt="БАЛАНС" class="menu-logo-img"
+              style="width: 60px; height: 60px; margin-right: 15px;">
+          </div>
+          <h3><i class="fas fa-user-cog"></i> Панель управления БАЛАНС PRO</h3>
+          <button class="close-menu" id="close-menu">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Модуль активации -->
+        <div class="activation-module">
+          <div class="activation-header">
+            <h4><i class="fas fa-rocket"></i> Активация системы</h4>
+            <div class="activation-status" id="activation-status">
+              <span class="status-dot inactive"></span>
+              <span>Не активировано</span>
+            </div>
+          </div>
+
+          <div class="activation-steps">
+            <!-- Шаг 1: Telegram -->
+            <div class="activation-step">
+              <div class="step-info">
+                <div class="step-icon">
+                  <i class="fab fa-telegram"></i>
+                </div>
+                <div>
+                  <h5>Подключить Telegram-бота</h5>
+                  <p>Бот будет напоминать о сессиях и собирать данные</p>
+                </div>
+              </div>
+            </div>
+            <button class="step-btn" id="menu-telegram-btn">
+              <i class="fab fa-telegram"></i> Подключить
+            </button>
+
+            <!-- Шаг 2: Google Sheets -->
+            <div class="activation-step">
+              <div class="step-info">
+                <div class="step-icon">
+                  <i class="fab fa-google"></i>
+                </div>
+                <div>
+                  <h5>Скачать шаблон Excel</h5>
+                  <p>Система будет сохранять ваши данные и строить аналитику</p>
+                </div>
+              </div>
+            </div>
+            <button class="step-btn" id="menu-excel-btn">
+              <i class="fas fa-download"></i> Скачать
+            </button>
+
+            <!-- Шаг 3: AI Калибровка -->
+            <!-- Форма AI калибровки -->
+            <div class="calibration-form" id="calibration-form" style="display: none;">
+              <h3><i class="fas fa-brain"></i> AI Калибровка энерготипа</h3>
+
+              <div class="form-group">
+                <input type="text" id="name" placeholder="Имя" required>
+              </div>
+
+              <div class="form-group">
+                <select id="gender">
+                  <option value="">Выберите пол</option>
+                  <option value="male">Мужской</option>
+                  <option value="female">Женский</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <input type="number" id="age" placeholder="Возраст" min="15" max="80" required>
+                </div>
+                <div class="form-group">
+                  <input type="number" id="weight" placeholder="Вес (кг)" min="40" max="200" required>
+                </div>
+                <div class="form-group">
+                  <input type="number" id="height" placeholder="Рост (см)" min="140" max="220" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <select id="activity">
+                  <option value="">Уровень активности</option>
+                  <option value="low">Низкий (сидячая работа)</option>
+                  <option value="medium">Средний (3-4 тренировки/неделю)</option>
+                  <option value="high">Высокий (спортсмен)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <select id="goal">
+                  <option value="">Основная цель</option>
+                  <option value="energy">Повысить энергию</option>
+                  <option value="weight">Снизить вес</option>
+                  <option value="muscle">Набрать мышцы</option>
+                  <option value="health">Улучшить здоровье</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <textarea id="additionalInfo" placeholder="Дополнительная информация, травмы, особенности..."
+                  rows="3"></textarea>
+              </div>
+
+              <button id="start-calibration" class="btn-primary">
+                <i class="fas fa-magic"></i> Получить AI рекомендации
+              </button>
+            </div>
+            <button class="step-btn ai-calibrate" id="menu-ai-btn">
+              <i class="fas fa-magic"></i> Запустить AI
+            </button>
+
+            <!-- Шаг 4: Оплата -->
+            <div class="activation-step">
+              <div class="step-info">
+                <div class="step-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <div>
+                  <h5>Полная активация системы</h5>
+                  <p>Разблокируйте доступ ко всем материалам курса</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="step-btn primary" id="menu-activate-btn">
+            <i class="fas fa-key"></i> Активировать (24 900 ₽)
+          </button>
+
+          <div class="menu-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" id="menu-progress"></div>
+            </div>
+            <span id="menu-progress-text">0/4 шагов</span>
+          </div>
+        </div>
+
+        <!-- Навигация по курсу -->
+        <div class="menu-navigation">
+          <h4><i class="fas fa-compass"></i> Навигация по курсу</h4>
+          <button class="menu-nav-btn" data-section="current-day-section">
+            <i class="fas fa-calendar-day"></i> Текущий день
+          </button>
+          <button class="menu-nav-btn" data-section="progress-section">
+            <i class="fas fa-chart-line"></i> Прогресс курса
+          </button>
+          <button class="menu-nav-btn" data-section="curriculum">
+            <i class="fas fa-layer-group"></i> Структура курса
+          </button>
+          <button class="menu-nav-btn" data-section="format-section">
+            <i class="fas fa-cogs"></i> Формат обучения
+          </button>
+          <button class="menu-nav-btn" data-section="bonuses">
+            <i class="fas fa-gift"></i> Бонусы
+          </button>
+          <button class="menu-nav-btn" data-section="pricing">
+            <i class="fas fa-tag"></i> Цены
+          </button>
+          <button class="menu-nav-btn" data-section="faq">
+            <i class="fas fa-question-circle"></i> FAQ
+          </button>
+        </div>
+
+        <!-- AI Помощник -->
+        <div class="ai-assistant-menu">
+          <h4><i class="fas fa-robot"></i> AI Помощник (DeepSeek)</h4>
+          <div class="ai-quick-actions">
+            <button class="ai-action-btn" data-action="explain-workout">
+              <i class="fas fa-dumbbell"></i> Объяснить тренировку
+            </button>
+            <button class="ai-action-btn" data-action="suggest-nutrition">
+              <i class="fas fa-utensils"></i> Подобрать питание
+            </button>
+            <button class="ai-action-btn" data-action="energy-tips">
+              <i class="fas fa-bolt"></i> Советы по энергии
+            </button>
+            <button class="ai-action-btn" data-action="ask-question">
+              <i class="fas fa-question"></i> Задать вопрос AI
+            </button>
+          </div>
+        </div>
+
+        <!-- Информация о системе -->
+        <div class="system-info">
+          <h4><i class="fas fa-info-circle"></i> Информация</h4>
+          <p class="system-version">Версия системы: 2.0 с AI</p>
+          <p class="user-id" id="user-id-info">ID пользователя: не установлен</p>
+          <button class="clear-data-btn" id="clear-data-btn">
+            <i class="fas fa-trash"></i> Очистить данные
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- === ОСНОВНОЙ САЙТ (виден сразу) === -->
+  <div id="main-content">
+    <!-- === ГЕРОЙ СЕКЦИЯ === -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <i class="fas fa-crown"></i> АВТОМАТИЧЕСКАЯ АРХИТЕКТУРА ЭФФЕКТИВНОСТИ
+        </div>
+        <h1 class="hero-title">БАЛАНС PRO</h1>
+        <p class="hero-tagline">Инжиниринг личной эффективности</p>
+        <p class="hero-subtitle">
+          <strong>Система, которая адаптируется под вас.</strong>
+          Автоматическое расписание тренировок и питания на каждый день курса.
+          Начните в любой день — система покажет нужный материал.
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">93%</div>
+            <div class="stat-label">Завершают курс</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">7/10</div>
+            <div class="stat-label">Оценка NPS</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">247%</div>
+            <div class="stat-label">ROI системы</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">1200+</div>
+            <div class="stat-label">Участников системы</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === ТЕКУЩИЙ ДЕНЬ КУРСА === -->
+    <section class="current-day-section container" id="current-day-section">
+      <div class="section-header">
+        <h2 class="section-title">Ваш день в системе</h2>
+        <p class="section-subtitle">
+          Система автоматически определяет ваш текущий день курса
+        </p>
+      </div>
+
+      <div class="day-info-card">
+        <div class="day-header">
+          <div class="day-badge">
+            <i class="fas fa-calendar-alt"></i>
+            День <span id="current-day">1</span>
+          </div>
+          <div class="week-badge">
+            <i class="fas fa-layer-group"></i>
+            Неделя <span id="current-week">1</span>
+          </div>
+        </div>
+
+        <div class="day-content">
+          <h3 id="day-title">Загрузка...</h3>
+          <p class="day-date" id="day-date">Сегодня: 01 января 2024</p>
+
+          <div class="day-stats">
+            <div class="day-stat">
+              <i class="fas fa-dumbbell"></i>
+              <span>Тренировка: <strong id="workout-type">Загрузка...</strong></span>
+            </div>
+            <div class="day-stat">
+              <i class="fas fa-utensils"></i>
+              <span>Питание: <strong id="nutrition-focus">Загрузка...</strong></span>
+            </div>
+            <div class="day-stat">
+              <i class="fas fa-clock"></i>
+              <span>Длительность: <strong>15-20 минут</strong></span>
+            </div>
+          </div>
+
+          <!-- AI помощник для дня -->
+          <!-- <div class="ai-day-assistant">
+            <button class="ai-day-help" id="ai-day-tips">
+              <i class="fas fa-robot"></i> Получить AI советы на день
+            </button>
+          </div> -->
+
+          <div class="day-navigation">
+            <button class="prev-day-btn" id="prev-day-btn">
+              <i class="fas fa-chevron-left"></i> Предыдущий день
+            </button>
+            <button class="next-day-btn" id="next-day-btn">
+              Следующий день <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === ТРЕНИРОВКА И ПИТАНИЕ НА СЕГОДНЯ === -->
+    <section class="today-content container" id="today-content">
+      <div class="content-grid">
+        <!-- ТРЕНИРОВКА -->
+        <div class="content-card workout-card">
+          <div class="content-header">
+            <div class="content-icon">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <h3>Тренировка на сегодня</h3>
+          </div>
+          <div class="content-body">
+            <div class="workout-info">
+              <h4 id="workout-title">Загрузка...</h4>
+              <p id="workout-description">Загрузка описания тренировки...</p>
+
+              <!-- Галерея упражнений -->
+              <div class="exercise-gallery" id="exercise-gallery">
+                <!-- Заполнится через JavaScript -->
+              </div>
+
+              <!-- Список упражнений с иконками -->
+              <div class="workout-exercises" id="workout-exercises">
+                <!-- Заполнится через JavaScript -->
+              </div>
+
+              <div class="workout-tips">
+                <h5><i class="fas fa-lightbulb"></i> Советы по выполнению:</h5>
+                <ul id="workout-tips">
+                  <!-- Заполнится через JavaScript -->
+                </ul>
+              </div>
+
+              <!-- AI помощник для тренировки -->
+              <div class="ai-workout-assistant">
+                <button class="ai-help-btn" id="workout-ai-help">
+                  <i class="fas fa-robot"></i> AI Объяснение упражнений
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ПИТАНИЕ -->
+        <div class="content-card nutrition-card">
+          <div class="content-header">
+            <div class="content-icon">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <h3>Питание на сегодня</h3>
+          </div>
+          <div class="content-body">
+            <div class="nutrition-info">
+              <h4 id="nutrition-title">Загрузка...</h4>
+              <p id="nutrition-description">Загрузка описания питания...</p>
+
+              <!-- Галерея питания -->
+              <div class="exercise-gallery" id="nutrition-gallery">
+                <!-- Заполнится через JavaScript -->
+              </div>
+
+              <div class="meal-plan">
+                <h5><i class="fas fa-clock"></i> Расписание питания:</h5>
+                <div class="meal-times" id="meal-times">
+                  <!-- Заполнится через JavaScript -->
+                </div>
+              </div>
+
+              <!-- Список питания с иконками -->
+              <div class="nutrition-meals" id="nutrition-meals">
+                <!-- Заполнится через JavaScript -->
+              </div>
+
+              <!-- AI помощник для питания -->
+              <div class="ai-nutrition-assistant">
+                <button class="ai-help-btn" id="nutrition-ai-help">
+                  <i class="fas fa-robot"></i> AI Анализ питания
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === ПРОГРЕСС КУРСА === -->
+    <section class="progress-section container">
+      <div class="section-header">
+        <h2 class="section-title">Ваш прогресс в курсе</h2>
+        <p class="section-subtitle">
+          49 дней системного подхода к эффективности
+        </p>
+      </div>
+
+      <div class="progress-container">
+        <div class="weeks-progress" id="weeks-progress">
+          <!-- Заполнится через JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- === СТРУКТУРА КУРСА === -->
+    <section class="curriculum container">
+      <div class="section-header">
+        <h2 class="section-title">7-недельная система</h2>
+        <p class="section-subtitle">
+          Автоматическое расписание на каждый день
+        </p>
+      </div>
+
+      <div class="curriculum-tabs">
+        <button class="tab-btn active" data-week="1">Неделя 1</button>
+        <button class="tab-btn" data-week="2">Неделя 2</button>
+        <button class="tab-btn" data-week="3">Неделя 3</button>
+        <button class="tab-btn" data-week="4">Неделя 4</button>
+        <button class="tab-btn" data-week="5">Неделя 5</button>
+        <button class="tab-btn" data-week="6">Неделя 6</button>
+        <button class="tab-btn" data-week="7">Неделя 7</button>
+      </div>
+
+      <div class="week-content" id="week-content">
+        <!-- Заполнится через JavaScript -->
+      </div>
+    </section>
+
+    <!-- === ФОРМАТ ОБУЧЕНИЯ === -->
+    <section class="format-section container">
+      <div class="section-header">
+        <h2 class="section-title">Формат сборки системы</h2>
+        <p class="section-subtitle">
+          Инструменты и среды, которые обеспечивают точность инженерного цикла
+        </p>
+      </div>
+
+      <div class="format-grid">
+        <div class="format-card">
+          <div class="format-card-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h4>Режим сопряжённого интеллекта</h4>
+          <p>Персональный бот как интерфейс к методологии. Не напоминает — обучается на ваших данных,
+            предлагая
+            калибровку вашего «уравнения» в реальном времени.</p>
+        </div>
+
+        <div class="format-card">
+          <div class="format-card-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h4>Профессиональная аналитика в Google Sheets</h4>
+          <p>Не просто таблица, а дашборд с автоматическими графиками, трендами и инсайтами. Все данные в
+            одном
+            месте с возможностью экспорта и углубленного анализа.</p>
+        </div>
+
+        <div class="format-card">
+          <div class="format-card-icon">
+            <i class="fas fa-headphones-alt"></i>
+          </div>
+          <h4>Аудиоформат от мировых экспертов</h4>
+          <p>Инструкции от нейробиологов, performance-коучей и экспертов по управлению энергией. Слушайте в
+            дороге
+            и применяйте сразу же.</p>
+        </div>
+
+        <div class="format-card">
+          <div class="format-card-icon">
+            <i class="fas fa-users-shield"></i>
+          </div>
+          <h4>Безопасное комьюнити архитекторов</h4>
+          <p>Анонимный формат без осуждения. Обмен опытом с топ-менеджерами, предпринимателями и экспертами,
+            которые ценят эффективность и конфиденциальность.</p>
+        </div>
+      </div>
+
+      <div class="research-note">
+        <strong><i class="fas fa-clipboard-check"></i> Инженерный подход:</strong>
+        Комбинированный формат (практика + аналитика + сообщество) показал на 89% большую retention rate и на
+        247%
+        больший ROI по сравнению с самостоятельным обучением.
+      </div>
+    </section>
+
+    <!-- === БОНУСЫ === -->
+    <section class="bonuses container">
+      <div class="section-header">
+        <h2 class="section-title">Комплект архитектора</h2>
+        <p class="section-subtitle">
+          Инструменты и доступы, которые ускорят сборку вашей системы
+        </p>
+      </div>
+
+      <div class="bonus-grid">
+        <div class="bonus-card">
+          <h4>Готовая библиотека шаблонов</h4>
+          <p>10+ готовых шаблонов Google Sheets для разных целей: трекер энергии, планировщик ритмов, журнал
+            срывов, дашборд прогресса.</p>
+        </div>
+
+        <div class="bonus-card">
+          <h4>Доступ к закрытому сообществу</h4>
+          <p>12 месяцев доступа к анонимному Telegram-чату с участниками курса. Обмен опытом, ответы на
+            вопросы,
+            поддержка единомышленников.</p>
+        </div>
+
+        <div class="bonus-card">
+          <h4>Пожизненные обновления системы</h4>
+          <p>Все будущие обновления курса — бесплатно. Новые протоколы, исследования, инструменты — вы
+            получаете
+            доступ ко всем улучшениям.</p>
+        </div>
+
+        <div class="bonus-card">
+          <h4>Индивидуальная 30-минутная сессия</h4>
+          <p>Персональная консультация с экспертом курса для настройки системы под ваши уникальные задачи и
+            цели.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- === ЦЕНЫ === -->
+    <section class="pricing container">
+      <div class="section-header">
+        <h2 class="section-title">Инвестиция в архитектуру</h2>
+        <p class="section-subtitle">
+          Выберите комплект инструментов для сборки вашей системы
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3 class="pricing-title">БАЗОВЫЙ КОМПЛЕКТ</h3>
+            <div class="pricing-price">24 900 ₽</div>
+            <div class="pricing-period">одноразовый платеж</div>
+          </div>
+
+          <ul class="pricing-features">
+            <li><i class="fas fa-check"></i> Полный 7-недельный цикл сборки</li>
+            <li><i class="fas fa-check"></i> Доступ к AI-ассистенту на 3 месяца</li>
+            <li><i class="fas fa-check"></i> Все шаблоны Google Sheets</li>
+            <li><i class="fas fa-check"></i> Аудио-инструкции от экспертов</li>
+            <li><i class="fas fa-check"></i> Доступ к материалам на 1 год</li>
+          </ul>
+
+          <button class="pricing-button" data-package="24900">
+            <i class="fas fa-shopping-cart"></i> Выбрать базовый комплект
+          </button>
+        </div>
+
+        <div class="pricing-card popular">
+          <div class="pricing-header">
+            <h3 class="pricing-title">ПРОФЕССИОНАЛЬНЫЙ КОМПЛЕКТ</h3>
+            <div class="pricing-price">39 900 ₽</div>
+            <div class="pricing-period">одноразовый платеж</div>
+          </div>
+
+          <ul class="pricing-features">
+            <li><i class="fas fa-check"></i> <strong>Всё из базового комплекта</strong></li>
+            <li><i class="fas fa-check"></i> Пожизненный доступ к обновлениям</li>
+            <li><i class="fas fa-check"></i> Индивидуальная 30-минутная сессия</li>
+            <li><i class="fas fa-check"></i> Доступ к AI-ассистенту на 12 месяцев</li>
+            <li><i class="fas fa-check"></i> 12 месяцев в закрытом сообществе</li>
+            <li><i class="fas fa-check"></i> Приоритетная поддержка</li>
+            <li><i class="fas fa-check"></i> Расширенная библиотека шаблонов</li>
+          </ul>
+
+          <button class="pricing-button" data-package="39900">
+            <i class="fas fa-bolt"></i> Выбрать профессиональный комплект
+          </button>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3 class="pricing-title">КОРПОРАТИВНЫЙ КОМПЛЕКТ</h3>
+            <div class="pricing-price">от 199 000 ₽</div>
+            <div class="pricing-period">за команду до 10 человек</div>
+          </div>
+
+          <ul class="pricing-features">
+            <li><i class="fas fa-check"></i> <strong>Всё из профессионального комплекта</strong></li>
+            <li><i class="fas fa-check"></i> Групповая онбординг-сессия</li>
+            <li><i class="fas fa-check"></i> Корпоративная аналитика эффективности</li>
+            <li><i class="fas fa-check"></i> Кастомизация под цели компании</li>
+            <li><i class="fas fa-check"></i> Отчеты для HR и руководства</li>
+          </ul>
+
+          <button class="pricing-button" data-package="corporate">
+            <i class="fas fa-building"></i> Обсудить корпоративный комплект
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- === FAQ === -->
+    <section class="faq container">
+      <div class="section-header">
+        <h2 class="section-title">Вопросы архитекторов</h2>
+        <p class="section-subtitle">
+          Ответы на вопросы об инженерном цикле сборки системы
+        </p>
+      </div>
+
+      <div class="faq-container">
+        <div class="faq-item">
+          <div class="faq-question">
+            Как работает автоматическое расписание?
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            Система запоминает дату вашего первого входа и автоматически рассчитывает текущий день курса.
+            Даже если вы пропустите несколько дней, система покажет актуальный материал для сегодняшнего
+            дня.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Можно ли перейти на другой день вручную?
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            Да, вы можете переключаться между днями с помощью кнопок "Предыдущий день" и "Следующий день".
+            Также можно кликнуть на любой день в прогресс-баре для быстрого перехода.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Что делать, если я пропущу несколько дней?
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            Система автоматически адаптируется. При следующем входе вам будет показан актуальный день курса.
+            Вы можете вернуться к пропущенным дням в любое время через прогресс-бар.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Как долго сохраняется мой прогресс?
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            Весь прогресс сохраняется в вашем браузере. Даже если вы закроете страницу, при следующем
+            посещении
+            система продолжит с того же места.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Можно ли пройти курс быстрее 7 недель?
+            <i class="fas fa-plus"></i>
+          </div>
+          <div class="faq-answer">
+            Да, вы можете переходить к следующим дням вручную. Однако для лучшего усвоения материала
+            рекомендуем придерживаться естественного темпа - 1 день курса = 1 календарный день.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === CTA === -->
+    <section class="cta">
+      <div class="cta-content">
+        <h2 class="cta-title">Начните сборку своей системы</h2>
+        <p class="cta-subtitle">
+          Присоединяйтесь к 1200+ топ-менеджерам, предпринимателям и экспертам,
+          которые превратили управление энергией из борьбы в архитектурное преимущество.
+        </p>
+        <button class="cta-button" id="cta-main-button">
+          <i class="fas fa-rocket"></i> Начать 7-недельный инженерный цикл
+        </button>
+        <p class="cta-note">
+          Доступ открывается сразу после оплаты. Первые настройки системы — через 3 дня.
+        </p>
+      </div>
+    </section>
+
+    <!-- === ФУТЕР === -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">БАЛАНС PRO</div>
+        <p class="footer-text">
+          Инжиниринг личной эффективности для топ-менеджеров, предпринимателями экспертов<br><br>
+          © 2024 БАЛАНС PRO. Все права сохранены.<br>
+          <em>Система основана на принципах современной нейробиологии, поведенческой экономики и
+            performance-коучинга. Не является медицинской услугой.</em>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- === МОДАЛЬНОЕ ОКНО AI === -->
+  <div id="ai-modal" class="modal">
+    <div class="modal-content ai-modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-robot"></i> AI Помощник (DeepSeek V3)</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="ai-conversation" class="ai-conversation">
+          <div class="ai-message assistant">
+            <div class="message-avatar">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+              Привет! Я ваш AI помощник в системе БАЛАНС PRO.<br><br>
+              Могу объяснить упражнения, проанализировать питание, дать советы по энергии.<br>
+              Чем могу помочь сегодня?
+            </div>
+          </div>
+        </div>
+        <div class="ai-input-container">
+          <textarea id="ai-message"
+            placeholder="Задайте вопрос AI-помощнику... (Например: 'Объясни технику приседаний' или 'Какое питание лучше для энергии?')"></textarea>
+          <button id="send-ai-message">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === МОДАЛЬНОЕ ОКНО ОПЛАТЫ === -->
+  <div id="payment-modal" class="modal">
+    <div class="modal-content">
+      <h3>Оплата курса</h3>
+      <div class="modal-input">
+        <label>Email для доступа</label>
+        <input type="email" id="payment-email" placeholder="ваш@email.com">
+      </div>
+      <div class="modal-input">
+        <label>Выберите пакет</label>
+        <select id="payment-package">
+          <option value="24900">БАЗОВЫЙ КОМПЛЕКТ — 24 900 ₽</option>
+          <option value="39900">ПРОФЕССИОНАЛЬНЫЙ КОМПЛЕКТ — 39 900 ₽</option>
+        </select>
+      </div>
+      <button id="pay-button">Оплатить картой</button>
+      <button id="close-payment-modal">Отмена</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="ai-integration.js"></script>
+</body>
+
+</html>
