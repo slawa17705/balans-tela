@@ -598,3 +598,8 @@ app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
     console.log(`🤖 AI интеграция: ${process.env.OPENROUTER_API_KEY ? 'активна' : 'требуется API ключ'}`);
 });
+// SPA fallback для всех маршрутов
+const path = require('path');
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
