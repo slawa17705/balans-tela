@@ -419,7 +419,7 @@ app.post('/api/ai/calibrate-energy', async (req, res) => {
         const content = response.data.choices[0].message.content;
 
         try {
-            const jsonMatch = content.match(/```json\n([\s\(\S\)]*?)\n```/) ||
+            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) ||
                 content.match(/{[\s\S]*}/);
 
             if (jsonMatch) {
