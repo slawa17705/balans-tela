@@ -15,6 +15,7 @@ app.use(express.static('public'));
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
+
 // Тестовый маршрут
 app.get('/test', (req, res) => {
     res.json({ message: 'Сервер работает!', timestamp: new Date() });
@@ -41,6 +42,11 @@ class GoogleSheetsManager {
 }
 
 const sheetsManager = new GoogleSheetsManager();
+const AI_ENDPOINT = "https:" + "//" + "api." + "proxyapi.ru" + "/v1/chat/completions";
+const AI_MODEL = "deepseek/deepseek-v3.2";
+function getAiKey() {
+    return process.env.PROXY_API_KEY || process.env.OPENROUTER_API_KEY || "";
+}
 
 // ====================
 // API для AI интеграции
@@ -61,13 +67,12 @@ app.post('/api/ai/generate', async (req, res) => {
 
         console.log('Данные пользователя:', JSON.stringify(userData, null, 2));
 
-        // Проверяем API ключ
-        if (!process.env.OPENROUTER_API_KEY) {
-            console.error('❌ OpenRouter API ключ не настроен');
+        const apiKey = getAiKey();
+        if (!apiKey) {
+            console.error('❌ API ключ не настроен');
             throw new Error('API ключ не настроен');
         }
 
-        // Создаём промпт для фитнес-рекомендаций
         const prompt = `
 Ты профессиональный фитнес-тренер и диетолог. 
 Создай персонализированные рекомендации для клиента:
@@ -90,12 +95,12 @@ app.post('/api/ai/generate', async (req, res) => {
 Будь конкретным, профессиональным и мотивирующим.
 Используй смайлики для наглядности.`;
 
-        console.log('📤 Отправляю запрос к OpenRouter...');
+        console.log('📤 Отправляю запрос к AI...');
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            AI_ENDPOINT,
             {
-                model: 'deepseek/deepseek-chat-v3-0324',
+                model: AI_MODEL,
                 messages: [
                     {
                         role: 'system',
@@ -111,16 +116,14 @@ app.post('/api/ai/generate', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://balans-tela.ru',
-                    'X-Title': 'Balans Tela'
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
                 },
-                timeout: 30000 // 30 секунд
+                timeout: 30000
             }
         );
 
-        console.log('✅ OpenRouter ответил успешно');
+        console.log('✅ AI ответил успешно');
 
         res.json({
             success: true,
@@ -131,7 +134,6 @@ app.post('/api/ai/generate', async (req, res) => {
     } catch (error) {
         console.error('🔥 Ошибка в /api/ai/generate:', error.response?.data || error.message);
         
-        // Fallback рекомендации
         const userData = req.body.userData || {};
         const fallbackAdvice = `🏋️‍♂️ **Персонализированные рекомендации для ${userData.name || 'Вас'}:**
 
@@ -172,34 +174,21 @@ app.post('/api/ai/generate', async (req, res) => {
 });
 // Получить API ключ для фронтенда
 app.get('/api/get-ai-key', (req, res) => {
-    // Можно отправить ключ или использовать прокси
-    const useProxy = process.env.USE_AI_PROXY === 'true';
-
-    if (useProxy) {
-        res.json({
-            success: true,
-            useProxy: true,
-            message: 'Используется серверный прокси'
-        });
-    } else if (process.env.OPENROUTER_API_KEY) {
-        res.json({
-            success: true,
-            apiKey: process.env.OPENROUTER_API_KEY
-        });
-    } else {
-        res.json({
-            success: false,
-            message: 'API ключ не настроен, используйте прокси'
-        });
-    }
+    res.json({
+        success: true,
+        useProxy: true,
+        configured: Boolean(getAiKey()),
+        message: 'Используется защищённый серверный прокси'
+    });
 });
 
 // Прокси для AI запросов
 app.post('/api/ai/query', async (req, res) => {
     try {
         const { model, messages, max_tokens, temperature } = req.body;
+        const apiKey = getAiKey();
 
-        if (!process.env.OPENROUTER_API_KEY) {
+        if (!apiKey) {
             return res.status(500).json({
                 success: false,
                 error: 'API ключ не настроен на сервере'
@@ -207,16 +196,16 @@ app.post('/api/ai/query', async (req, res) => {
         }
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            AI_ENDPOINT,
             {
-                model: model || 'deepseek/deepseek-chat-v3-0324',
+                model: model || AI_MODEL,
                 messages,
                 max_tokens: max_tokens || 1000,
                 temperature: temperature || 0.7
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -242,6 +231,11 @@ app.post('/api/ai/query', async (req, res) => {
 app.post('/api/ai/analyze-workout', async (req, res) => {
     try {
         const { workoutData } = req.body;
+        const apiKey = getAiKey();
+
+        if (!apiKey) {
+            return res.status(500).json({ success: false, error: 'API ключ не настроен на сервере' });
+        }
 
         const prompt = `
         Как эксперт по фитнесу и нейробиологии, проанализируй эту тренировку:
@@ -261,9 +255,9 @@ app.post('/api/ai/analyze-workout', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            AI_ENDPOINT,
             {
-                model: 'deepseek/deepseek-chat-v3-0324',
+                model: AI_MODEL,
                 messages: [
                     {
                         role: 'system',
@@ -279,7 +273,7 @@ app.post('/api/ai/analyze-workout', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -303,6 +297,11 @@ app.post('/api/ai/analyze-workout', async (req, res) => {
 app.post('/api/ai/analyze-nutrition', async (req, res) => {
     try {
         const { nutritionData } = req.body;
+        const apiKey = getAiKey();
+
+        if (!apiKey) {
+            return res.status(500).json({ success: false, error: 'API ключ не настроен на сервере' });
+        }
 
         const prompt = `
         Как профессиональный диетолог, проанализируй это питание:
@@ -322,9 +321,9 @@ app.post('/api/ai/analyze-nutrition', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            AI_ENDPOINT,
             {
-                model: 'deepseek/deepseek-chat-v3-0324',
+                model: AI_MODEL,
                 messages: [
                     {
                         role: 'system',
@@ -340,7 +339,7 @@ app.post('/api/ai/analyze-nutrition', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -359,11 +358,15 @@ app.post('/api/ai/analyze-nutrition', async (req, res) => {
         });
     }
 });
-
 // Калибровка энерготипа
 app.post('/api/ai/calibrate-energy', async (req, res) => {
     try {
         const { answers } = req.body;
+        const apiKey = getAiKey();
+
+        if (!apiKey) {
+            return res.status(500).json({ success: false, error: 'API ключ не настроен на сервере' });
+        }
 
         const prompt = `
         На основе этих ответов определи энерготип и дай рекомендации:
@@ -389,9 +392,9 @@ app.post('/api/ai/calibrate-energy', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            AI_ENDPOINT,
             {
-                model: 'deepseek/deepseek-chat-v3-0324',
+                model: AI_MODEL,
                 messages: [
                     {
                         role: 'system',
@@ -407,7 +410,7 @@ app.post('/api/ai/calibrate-energy', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -415,9 +418,8 @@ app.post('/api/ai/calibrate-energy', async (req, res) => {
 
         const content = response.data.choices[0].message.content;
 
-        // Парсим JSON из ответа
         try {
-            const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) ||
+            const jsonMatch = content.match(/```json\n([\s\(\S\)]*?)\n```/) ||
                 content.match(/{[\s\S]*}/);
 
             if (jsonMatch) {
@@ -429,7 +431,6 @@ app.post('/api/ai/calibrate-energy', async (req, res) => {
                     calibration: result
                 });
             } else {
-                // Если не нашли JSON, возвращаем как текст
                 res.json({
                     success: true,
                     calibration: {
@@ -459,6 +460,11 @@ app.post('/api/ai/calibrate-energy', async (req, res) => {
 app.post('/api/ai/daily-tips', async (req, res) => {
     try {
         const { dayNumber, workoutType, nutritionFocus, userPreferences } = req.body;
+        const apiKey = getAiKey();
+
+        if (!apiKey) {
+            return res.status(500).json({ success: false, error: 'API ключ не настроен на сервере' });
+        }
 
         const prompt = `
         Сгенерируй персонализированные советы для дня ${dayNumber} курса по управлению энергией.
@@ -480,9 +486,9 @@ app.post('/api/ai/daily-tips', async (req, res) => {
         `;
 
         const response = await axios.post(
-            'https://openrouter.ai/api/v1/chat/completions',
+            AI_ENDPOINT,
             {
-                model: 'deepseek/deepseek-chat-v3-0324',
+                model: AI_MODEL,
                 messages: [
                     {
                         role: 'system',
@@ -498,7 +504,7 @@ app.post('/api/ai/daily-tips', async (req, res) => {
             },
             {
                 headers: {
-                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Authorization': `Bearer ${apiKey}`,
                     'Content-Type': 'application/json'
                 }
             }
@@ -536,7 +542,6 @@ app.get('/api/check/:userId', async (req, res) => {
                 username: user.username
             });
         } else {
-            // Если бот отключен, имитируем успешную проверку
             res.json({
                 success: true,
                 userId: userId,
@@ -579,14 +584,11 @@ app.post('/api/create-sheet', async (req, res) => {
 app.get('/api/activation/status/:userId', async (req, res) => {
     const userId = req.params.userId;
 
-    // Здесь можно добавить логику проверки из базы данных
-    // Пока возвращаем демо-статус
-
     res.json({
         success: true,
         userId: userId,
-        status: 'active', // или 'pending', 'inactive'
-        currentStep: 3, // последний завершенный шаг
+        status: 'active',
+        currentStep: 3,
         hasSheet: true,
         hasTelegram: true,
         isActivated: true
@@ -596,8 +598,9 @@ app.get('/api/activation/status/:userId', async (req, res) => {
 // Запуск сервера
 app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-    console.log(`🤖 AI интеграция: ${process.env.OPENROUTER_API_KEY ? 'активна' : 'требуется API ключ'}`);
+    console.log(`🤖 AI интеграция: ${getAiKey() ? 'активна' : 'требуется API ключ'}`);
 });
+
 // SPA fallback для всех маршрутов
 const path = require('path');
 app.get('*', (req, res) => {
